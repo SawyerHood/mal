@@ -78,10 +78,10 @@ DOCKERIZE =
 #
 
 IMPLS = ada awk bash c d chuck clojure coffee cpp crystal cs erlang elisp \
-	elixir es6 factor forth fsharp go groovy guile haskell haxe \
+	elixir es6 factor forth fsharp go groovy guile haskell haxe hack \
 	io java julia js kotlin logo lua make mal ocaml matlab miniMAL \
 	nim objc objpascal perl perl6 php plpgsql plsql ps python r \
-	racket rpython ruby rust scala swift swift3 tcl vb vhdl vimscript
+	racket rpython ruby rust scala swift swift3 tcl vb vhdl vimscript 
 
 step0 = step0_repl
 step1 = step1_read_print
@@ -164,6 +164,7 @@ groovy_STEP_TO_PROG =  groovy/$($(1)).groovy
 java_STEP_TO_PROG =    java/target/classes/mal/$($(1)).class
 haskell_STEP_TO_PROG = haskell/$($(1))
 haxe_STEP_TO_PROG =    $(haxe_STEP_TO_PROG_$(HAXE_MODE))
+hack_STEP_TO_PROG =    hack/$($(1)).hh
 io_STEP_TO_PROG =      io/$($(1)).io
 julia_STEP_TO_PROG =   julia/$($(1)).jl
 js_STEP_TO_PROG =      js/$($(1)).js

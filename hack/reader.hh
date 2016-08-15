@@ -57,7 +57,8 @@ class Reader {
 
   private function readAtom(): MalType {
     $token = $this->peek();
-    if (ctype_digit($token)) {
+    // This could be dangerous, we are using this as a catch all until I add other number types
+    if (is_numeric($token)) {
       return new IntegerType((int) $token);
     } else {
       return new SymbolType($token);

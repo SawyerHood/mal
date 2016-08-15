@@ -22,7 +22,7 @@ function malDiv(MalType ...$args): MalType {
 function malMult(MalType ...$args): MalType {
   return array_reduce($args, ($a, $b) ==> {
     return new IntegerType($a->getValue() * $b->getValue());
-  }, 1);
+  }, new IntegerType(1));
 }
 
 class Enviornment {
@@ -45,10 +45,13 @@ class Enviornment {
   public function evaluate(MalType $ast): MalType {
     if ($ast instanceof SymbolType) {
       if (!$this->envMap->containsKey($ast->getValue())) {
-        throw new Exception("Symbol not found.", 1);
+        throw new Exception("'{$ast->getValue()}' not found.", 1);
       }
       return $ast;
     } else if ($ast instanceof ListType) {
+      if ($ast->getValue()->count() === 0) {
+        return $ast;
+      }
       $listValues = $ast->getValue()->map(($node)==> {
         return $this->evaluate($node);
       });

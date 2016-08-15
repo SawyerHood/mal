@@ -25,7 +25,12 @@ function readMal(string $in): \MalType {
 
 function evalMal(\MalType $in): \MalType {
   $env = \Enviornment::defaultEnviornment();
-  return $env->evaluate($in);
+  try {
+    return $env->evaluate($in);
+  } catch (\Exception $e) {
+    fwrite(STDERR, (string) $e->getMessage());
+    return new \SymbolType('');
+  }
 }
 
 function printMal(\MalType $in): string {

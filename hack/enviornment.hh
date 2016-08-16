@@ -42,6 +42,17 @@ class Enviornment {
     };
   }
 
+  private function evaluateMembers(MalType $ast): Vector<MalType> {
+    $valueVec = $ast->getValue();
+    if ($valueVec instanceof Vector) {
+      return $valueVec->map(($node)==> {
+        return $this->evaluate($node);
+      });
+    } else {
+      return Vector {};
+    }
+  }
+
   public function evaluate(MalType $ast): MalType {
     if ($ast instanceof SymbolType) {
       if (!$this->envMap->containsKey($ast->getValue())) {
@@ -52,10 +63,12 @@ class Enviornment {
       if ($ast->getValue()->count() === 0) {
         return $ast;
       }
-      $listValues = $ast->getValue()->map(($node)==> {
-        return $this->evaluate($node);
-      });
+      $listValues = $this->evaluateMembers($ast);
       return call_user_func_array($this->envMap[(string) $listValues[0]->getValue()], $listValues->slice(1, count($listValues)));
+    } else if ($ast instanceof MapType) {
+      return $ast->getValue()->count() === 0 ? $ast : new MapType($this->evaluateMembers($ast));
+    } else if ($ast instanceof VectorType) {
+      return $ast->getValue()->count() === 0 ? $ast : new VectorType($this->evaluateMembers($ast));
     } else {
       return $ast;
     }

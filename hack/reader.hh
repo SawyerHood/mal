@@ -35,6 +35,14 @@ class Reader {
         $this->next();
         $toReturn = $this->readList();
         break;
+      case '{':
+        $this->next();
+        $toReturn = $this->readMap();
+        break;
+      case '[':
+        $this->next();
+        $toReturn = $this->readVector();
+        break;
       default:
         $toReturn = $this->readAtom();
         break;
@@ -44,11 +52,26 @@ class Reader {
   }
 
   private function readList(): MalType {
+    $list = $this->readUntilEndOfLineOrToken(')');
+    return new ListType($list);
+  }
+
+  private function readMap(): MalType {
+    $list = $this->readUntilEndOfLineOrToken('}');
+    return new MapType($list);
+  }
+
+  private function readVector(): MalType {
+    $list = $this->readUntilEndOfLineOrToken(']');
+    return new VectorType($list);
+  }
+
+  private function readUntilEndOfLineOrToken(string $token): Vector<MalType> {
     $list = Vector {};
-    while(!$this->isDone() && $this->peek() !== ')') {
+    while(!$this->isDone() && $this->peek() !== $token) {
       $list[] = $this->readForm();
     }
-    return new ListType($list);
+    return $list;
   }
 
   private function isDone(): bool {

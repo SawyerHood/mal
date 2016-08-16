@@ -1,5 +1,15 @@
 <?hh
 
+function vecToString(Vector<MalType> $values) {
+  return $values->map(($value) ==> {
+    return (string) $value;
+  });
+}
+
+function prettyPrintVecType(Vector<MalType> $values, string $leftWrapper, string $rightWrapper): string {
+  return $leftWrapper . implode(' ', vecToString($values)) . $rightWrapper;
+}
+
 abstract class MalType {
   public abstract function getValue(): mixed;
 
@@ -24,10 +34,31 @@ class ListType extends MalType {
   }
 
   public function __toString(): string {
-    $contents = $this->values->map(($value) ==> {
-      return (string) $value;
-    });
-    return '(' . implode(' ', $contents) . ')';
+    return prettyPrintVecType($this->values, '(', ')');
+  }
+}
+
+class MapType extends MalType {
+  public function __construct(private Vector<MalType> $values) {}
+
+  public function getValue(): Vector<MalType> {
+    return $this->values;
+  }
+
+  public function __toString(): string {
+    return prettyPrintVecType($this->values, '{', '}');
+  }
+}
+
+class VectorType extends MalType {
+  public function __construct(private Vector<MalType> $values) {}
+
+  public function getValue(): Vector<MalType> {
+    return $this->values;
+  }
+
+  public function __toString(): string {
+    return prettyPrintVecType($this->values, '[', ']');
   }
 }
 

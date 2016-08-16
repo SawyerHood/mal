@@ -30,7 +30,7 @@ class Reader {
   private function readForm(): MalType {
     $token = $this->peek();
     $toReturn = null;
-    switch ($token) {
+    switch ($token[0]) {
       case '(':
         $this->next();
         $toReturn = $this->readList();
@@ -83,6 +83,10 @@ class Reader {
     // This could be dangerous, we are using this as a catch all until I add other number types
     if (is_numeric($token)) {
       return new IntegerType((int) $token);
+    } else if ($token[0] === '"') {
+      return new StringType(substr($token, 1, strlen($token) - 2));
+    } else if ($token[0] === ':') {
+      return new KeywordType($token);
     } else {
       return new SymbolType($token);
     }

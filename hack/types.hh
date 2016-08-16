@@ -26,6 +26,26 @@ class IntegerType extends MalType {
   }
 }
 
+class StringType extends MalType {
+  public function __construct(private string $value) {}
+
+  public function getValue(): string {
+    return $this->value;
+  }
+
+  public function __toString(): string {
+    return '"' . $this->value . '"';
+  }
+}
+
+class KeywordType extends MalType {
+  public function __construct(private string $value) {}
+
+  public function getValue(): string {
+    return $this->value;
+  }
+}
+
 class ListType extends MalType {
   public function __construct(private Vector<MalType> $values) {}
 
